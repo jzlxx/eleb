@@ -12,14 +12,14 @@
         </dl>
     </li>
 </ul>
-<ul class="layui-nav right sub-menu" lay-filter="">
+<ul class="layui-nav right" lay-filter="">
     <li class="layui-nav-item">
-        <a href="javascript:;">{{ auth()->user()->name }}</a>
+        <a href="javascript:;">admin</a>
         <dl class="layui-nav-child"> <!-- 二级菜单 -->
-            <dd><a href="#" >个人信息</a></dd>
-            <dd><a href="#">修改密码</a></dd>
-            <dd><a href="{{ route('logout') }}">退出</a></dd>
-
+            <dd><a onclick="x_admin_show('个人信息','http://www.baidu.com')">个人信息</a></dd>
+            <dd><a onclick="x_admin_show('切换帐号','http://www.baidu.com')">切换帐号</a></dd>
+            <dd><a href="./login.html">退出</a></dd>
+        </dl>
     </li>
     <li class="layui-nav-item to-index"><a href="/">前台首页</a></li>
 </ul>

@@ -9,6 +9,12 @@ use Illuminate\Support\Facades\Storage;
 class ShopCategoryController extends Controller
 {
     //
+
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     public function index(Request $request)
     {
         $keyword = $request->keyword;
@@ -17,7 +23,7 @@ class ShopCategoryController extends Controller
         }else{
             $shopcategories = ShopCategory::paginate(3);
         }
-        return view('shopcategory.index',['shopcategories'=>$shopcategories]);
+        return view('shopcategory.index',['shopcategories'=>$shopcategories,'keyword'=>$keyword]);
     }
 
     public function create()
@@ -42,7 +48,7 @@ class ShopCategoryController extends Controller
         $path = $img->store('public/shopcategory');
         $data = [
             'name'=>$request->name,
-            'img'=>$path,
+            'img'=>url(Storage::url($path))
         ];
         ShopCategory::create($data);
         return redirect()->route('shopcategories.index')->with('success','添加分类成功');
@@ -64,13 +70,12 @@ class ShopCategoryController extends Controller
         $img = $request->file('img');
         if ($img!=null){
             $path = $img->store('public/shopcategory');
-            Storage::delete($shopcategory->img);
         }else{
             $path = $shopcategory->img;
         }
         $data = [
             'name'=>$request->name,
-            'img'=>$path,
+            'img'=>url(Storage::url($path))
         ];
         $shopcategory->update($data);
         return redirect()->route('shopcategories.index')->with('success','修改分类成功');
@@ -78,7 +83,6 @@ class ShopCategoryController extends Controller
 
     public function destroy(ShopCategory $shopcategory)
     {
-        Storage::delete($shopcategory->img);
         $shopcategory->delete();
         return redirect()->route('shopcategories.index')->with('success','删除分类成功');
     }

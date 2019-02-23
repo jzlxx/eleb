@@ -40,7 +40,7 @@
         <tr>
             <td>{{ $shopcategory->id }}</td>
             <td>{{ $shopcategory->name }}</td>
-            <td><img src="{{ $shopcategory->img() }}" alt=""></td>
+            <td><img src="{{ $shopcategory->img  }}" alt=""></td>
             <td class="td-status">
                 @if($shopcategory->status == 0)
                     隐藏
@@ -69,6 +69,7 @@
             @endforeach
         </tbody>
     </table>
+    {{ $shopcategories->appends(['keyword'=>$keyword])->links() }}
 
     <div class="modal fade" id="AddModel" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
         <div class="modal-dialog" role="document">

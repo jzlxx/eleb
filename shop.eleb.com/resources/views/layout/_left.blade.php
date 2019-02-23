@@ -23,7 +23,7 @@
                         </a>
                         <ul class="sub-menu">
                             <li>
-                                <a _href="{{ route('shops.index') }}">
+                                <a _href="xxx.html">
                                     <i class="iconfont">&#xe6a7;</i>
                                     <cite>商家信息列表</cite>
 
@@ -36,21 +36,29 @@
 
                                 </a>
                             </li>
+                            <li>
+                                <a _href="xx.html">
+                                    <i class="iconfont">&#xe6a7;</i>
+                                    <cite>等级管理</cite>
+
+                                </a>
+                            </li>
+
                         </ul>
                     </li>
                 </ul>
             </li>
             <li>
                 <a href="javascript:;">
-                    <i class="iconfont">&#xe6b8;</i>
-                    <cite>管理员管理</cite>
+                    <i class="iconfont">&#xe723;</i>
+                    <cite>订单管理</cite>
                     <i class="iconfont nav_right">&#xe697;</i>
                 </a>
                 <ul class="sub-menu">
                     <li>
-                        <a _href="{{ route('admins.index') }}">
+                        <a _href="order-list.html">
                             <i class="iconfont">&#xe6a7;</i>
-                            <cite>管理员列表</cite>
+                            <cite>订单列表</cite>
                         </a>
                     </li >
                 </ul>
