@@ -30,7 +30,7 @@
                                 </a>
                             </li >
                             <li>
-                                <a _href="xx.html">
+                                <a _href="{{ route('users.index') }}">
                                     <i class="iconfont">&#xe6a7;</i>
                                     <cite>商家账号列表</cite>
 

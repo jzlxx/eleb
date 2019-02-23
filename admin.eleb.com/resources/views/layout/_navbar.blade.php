@@ -17,7 +17,7 @@
         <a href="javascript:;">{{ auth()->user()->name }}</a>
         <dl class="layui-nav-child"> <!-- 二级菜单 -->
             <dd><a href="#" >个人信息</a></dd>
-            <dd><a href="#">修改密码</a></dd>
+            <dd><a href="{{ route('admins.pwd') }}">修改密码</a></dd>
             <dd><a href="{{ route('logout') }}">退出</a></dd>
 
     </li>

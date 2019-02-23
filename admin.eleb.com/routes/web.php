@@ -39,9 +39,16 @@ Route::post('/shops/update', 'ShopController@update')->name('shops.update');
 Route::get('/shops/ustatus/{shop}', 'ShopController@ustatus')->name('shops.ustatus');
 
 //管理员账号
+Route::get('admins/pwd','AdminController@pwd')->name('admins.pwd');
+Route::post('/admins/pupdate', 'AdminController@pupdate')->name('admins.pupdate');
 Route::resource('admins','AdminController');
-Route::post('/adminss/update', 'AdminController@update')->name('adminss.update');
-Route::get('/adminss/ustatus/{shop}', 'AdminController@ustatus')->name('adminss.ustatus');
+//Route::get('/admins/ustatus/{admin}', 'AdminController@ustatus')->name('admins.ustatus');
+
+
+//商家账号
+Route::resource('users','UserController');
+Route::post('/users/update', 'UserController@update')->name('users.update');
+Route::get('/users/ustatus/{user}', 'UserController@ustatus')->name('users.ustatus');
 
 
 //登录

@@ -11,7 +11,7 @@
         </div>
         <div class="form-group">
             <label>用户密码</label>
-            <input type="text" name="passwd" class="form-control" placeholder="请输入密码">
+            <input type="password" name="password" class="form-control" placeholder="请输入密码">
         </div>
         <div class="checkbox">
             <label>
