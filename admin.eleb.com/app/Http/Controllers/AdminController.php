@@ -70,9 +70,9 @@ class AdminController extends Controller
         ],[
             'oldpassword.required'=>"原密码不能为空",
             'password.required'=>"新密码不能为空",
-            'password_confirmation.required'=>"重复密码不能为空",
-            'password.confirmed'=>"密码与确认密码不匹配",
-            'password_confirmation.same'=>"请正确核对两次密码是否一致",
+            'password_confirmation.required'=>"确认密码不能为空",
+            'password.confirmed'=>"密码与确认密码不相同",
+            'password_confirmation.same'=>"请正确核对两次密码是否相同 ",
         ]);
         $user = auth()->user();
         $result=Hash::check($request->oldpassword,$user->password);

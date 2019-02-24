@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -34,6 +35,8 @@ class LoginController extends Controller
         ],$request->has('rememberMe'))){
             return redirect()->route('welcome.index')->with('success','登录成功');
         }else{
+            $user = User::where('name',$request->name)->first();
+            if ($user && $user->status == 0) return back()->with('danger','账号被禁用');
             return back()->with('danger','账号或者密码错误');
         }
     }

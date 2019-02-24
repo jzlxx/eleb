@@ -27,5 +27,16 @@ Route::get('logout', 'LoginController@destroy')->name('logout');
 //主页欢迎
 Route::get('/welcome/index','WelcomeController@index')->name('welcome.index');
 
+//修改密码
 Route::get('/users/pwd','UserController@pwd')->name('users.pwd');
 Route::post('/users/pupdate', 'UserController@pupdate')->name('users.pupdate');
+
+//菜品分类
+Route::resource('menucategories','MenuCategoryController');
+Route::post('/menucategories/update', 'MenuCategoryController@update')->name('menucategories.update');
+Route::get('/menucategories/ustatus/{menucategory}', 'MenuCategoryController@ustatus')->name('menucategories.ustatus');
+
+//菜品
+Route::resource('menus','MenuController');
+Route::post('/menus/update', 'MenuController@update')->name('menus.update');
+Route::get('/menus/ustatus/{menu}', 'MenuController@ustatus')->name('menus.ustatus');

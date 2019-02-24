@@ -69,13 +69,13 @@ class ShopCategoryController extends Controller
         $shopcategory = ShopCategory::find($id);
         $img = $request->file('img');
         if ($img!=null){
-            $path = $img->store('public/shopcategory');
+            $path = url(Storage::url($img->store('public/shopcategory')));
         }else{
             $path = $shopcategory->img;
         }
         $data = [
             'name'=>$request->name,
-            'img'=>url(Storage::url($path))
+            'img'=>$path
         ];
         $shopcategory->update($data);
         return redirect()->route('shopcategories.index')->with('success','修改分类成功');

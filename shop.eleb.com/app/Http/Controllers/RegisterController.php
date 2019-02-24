@@ -61,37 +61,44 @@ class RegisterController extends Controller
                 'password.required'=>'请输入密码',
             ]
         );
-        $img = $request->file('shop_img');
-        //保存文件
-        $path = url(Storage::url($img->store('public/shop')));
+        try{
+            DB::transaction(function () use($request){
+                $img = $request->file('shop_img');
+                //保存文件
+                $path = url(Storage::url($img->store('public/shop')));
 
-        $data_shop = [
-            'shop_category_id'=>$request->shop_category_id,
-            'shop_name'=>$request->shop_name,
-            'shop_img'=>$path,
-            'brand'=>$request->brand,
-            'on_time'=>$request->on_time,
-            'fengniao'=>$request->fengniao,
-            'bao'=>$request->bao,
-            'piao'=>$request->piao,
-            'zhun'=>$request->zhun,
-            'start_send'=>$request->start_send,
-            'send_cost'=>$request->send_cost,
-            'notice'=>$request->notice,
-            'discount'=>$request->discount,
-            'shop_rating'=>rand(0,5),
-        ];
-        $shop = Shop::create($data_shop);
-        $shop_id = $shop->id;
 
-        $data_user = [
-            'name'=>$request->name,
-            'email'=>$request->email,
-            'password'=>Hash::make($request->password),
-            'shop_id'=>$shop_id,
-            'remember_token'=>uniqid(),
-        ];
-        $user = User::create($data_user);
-        return redirect()->route('login')->with('success','注册成功');
+                $data_shop = [
+                    'shop_category_id' => $request->shop_category_id,
+                    'shop_name' => $request->shop_name,
+                    'shop_img' => $path,
+                    'brand' => $request->brand,
+                    'on_time' => $request->on_time,
+                    'fengniao' => $request->fengniao,
+                    'bao' => $request->bao,
+                    'piao' => $request->piao,
+                    'zhun' => $request->zhun,
+                    'start_send' => $request->start_send,
+                    'send_cost' => $request->send_cost,
+                    'notice' => $request->notice,
+                    'discount' => $request->discount,
+                    'shop_rating' => rand(0, 5),
+                ];
+                $shop = Shop::create($data_shop);
+                $shop_id = $shop->id;
+
+                $data_user = [
+                    'name' => $request->name,
+                    'email' => $request->email,
+                    'password' => Hash::make($request->password),
+                    'shop_id' => $shop_id,
+                    'remember_token' => uniqid(),
+                ];
+                $user = User::create($data_user);
+            });
+            return redirect()->route('login')->with('success','注册成功');
+        }catch (\Exception $e){
+            return back()->withErrors(['注册失败'])->withInput();
+        }
     }
 }

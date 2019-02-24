@@ -78,7 +78,7 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    {{--<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>--}}
                     <h4 class="modal-title" id="myModalLabel">商铺详情</h4>
                 </div>
                 <div class="modal-body">
@@ -191,7 +191,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <a class="layui-btn layui-btn-small btn btn-default" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">关闭</a>
+                    {{--<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>--}}
                 </div>
             </div>
         </div>
@@ -201,7 +202,7 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    {{--<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>--}}
                     <h4 class="modal-title" id="myModalLabel">修改店铺信息</h4>
                 </div>
                 <div class="modal-body">
@@ -339,7 +340,8 @@
                         </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <a class="layui-btn layui-btn-small btn btn-default" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">关闭</a>
+                    {{--<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>--}}
                 </div>
             </div>
         </div>

@@ -55,3 +55,4 @@ Route::get('/users/ustatus/{user}', 'UserController@ustatus')->name('users.ustat
 Route::get('login', 'LoginController@create')->name('login');
 Route::post('login', 'LoginController@store')->name('login');
 Route::get('logout', 'LoginController@destroy')->name('logout');
+
