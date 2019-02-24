@@ -89,8 +89,8 @@ class MenuCategoryController extends Controller
     public function destroy(MenuCategory $menucategory)
     {
         $id = $menucategory->id;
-        $menus = Menu::where('category_id','=',$id);
-        if ($menus){
+        $result = DB::select("select * from menus where category_id = $id");
+        if ($result){
             return redirect()->route('menucategories.index')->with('danger','不是空菜品分类');
         }
         $menucategory->delete();
