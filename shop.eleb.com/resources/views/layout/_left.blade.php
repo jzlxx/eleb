@@ -66,14 +66,14 @@
             <li>
                 <a href="javascript:;">
                     <i class="iconfont">&#xe723;</i>
-                    <cite>城市联动</cite>
+                    <cite>活动管理</cite>
                     <i class="iconfont nav_right">&#xe697;</i>
                 </a>
                 <ul class="sub-menu">
                     <li>
-                        <a _href="city.html">
+                        <a _href="{{ route('activities.index') }}">
                             <i class="iconfont">&#xe6a7;</i>
-                            <cite>三级地区联动</cite>
+                            <cite>活动列表</cite>
                         </a>
                     </li >
                 </ul>

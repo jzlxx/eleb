@@ -26,29 +26,21 @@ class ShopCategoryController extends Controller
         return view('shopcategory.index',['shopcategories'=>$shopcategories,'keyword'=>$keyword]);
     }
 
-    public function create()
-    {
-        return view('shopcategory.create');
-    }
 
     public function store(Request $request)
     {
         $this->validate($request,
             [
             'name'=>'required',
-            'img'=>'required|image'
+            'img_path'=>'required'
             ],
             [
                 'name.required'=>'分类名不能为空',
-                'img.required'=>'图片不能为空',
-                'img.image'=>'图片格式不正确',
+                'img_path.required'=>'图片不能为空',
             ]);
-        $img = $request->file('img');
-        //保存文件
-        $path = $img->store('public/shopcategory');
         $data = [
             'name'=>$request->name,
-            'img'=>url(Storage::url($path))
+            'img'=>$request->img_path,
         ];
         ShopCategory::create($data);
         return redirect()->route('shopcategories.index')->with('success','添加分类成功');
@@ -59,17 +51,15 @@ class ShopCategoryController extends Controller
         $this->validate($request,
             [
                 'name'=>'required',
-                'img'=>'image'
             ],
             [
                 'name.required'=>'分类名不能为空',
-                'img.image'=>'图片格式不正确',
             ]);
         $id = $request->id;
         $shopcategory = ShopCategory::find($id);
-        $img = $request->file('img');
+        $img = $request->img_path;
         if ($img!=null){
-            $path = url(Storage::url($img->store('public/shopcategory')));
+            $path = $img;
         }else{
             $path = $shopcategory->img;
         }
@@ -96,5 +86,13 @@ class ShopCategoryController extends Controller
         }
         $shopcategory->save();
         return redirect()->route('shopcategories.index')->with('success','修改状态成功');
+    }
+
+    public function upload(Request $request)
+    {
+        $img = $request->file('file');
+        //保存文件
+        $path = Storage::url($img->store('public/shopcategory'));
+        return (['path'=>$path]);
     }
 }

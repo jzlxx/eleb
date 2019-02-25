@@ -17,6 +17,7 @@ Route::get('/', function () {
 
 Route::get('/Register/register','RegisterController@register')->name('register.register');
 Route::post('/Register/store','RegisterController@store')->name('register.store');
+Route::post('/Register/upload','RegisterController@upload')->name('register.upload');
 
 //登录
 Route::get('login', 'LoginController@create')->name('login');
@@ -40,3 +41,7 @@ Route::get('/menucategories/ustatus/{menucategory}', 'MenuCategoryController@ust
 Route::resource('menus','MenuController');
 Route::post('/menus/update', 'MenuController@update')->name('menus.update');
 Route::get('/menus/ustatus/{menu}', 'MenuController@ustatus')->name('menus.ustatus');
+Route::post('/menus/upload','MenuController@upload')->name('menus.upload');
+
+//活动
+Route::resource('activities','ActivityController');

@@ -1,5 +1,10 @@
 @include('layout._header')
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+<!--引入CSS-->
+<link rel="stylesheet" type="text/css" href="/webuploader/webuploader.css">
+<!--引入JS-->
+<script type="text/javascript" src="/webuploader/webuploader.js"></script>
+
 <body>
 <div class="x-nav">
       <span class="layui-breadcrumb">
@@ -188,10 +193,19 @@
                                 <input type="text" class="form-control" id="" name="goods_name" value="{{ old('goods_name') }}" placeholder="请输入菜品名">
                             </div>
                         </div>
+                        <style>
+                            #filePicker div:nth-child(2){width:100%!important;height:100%!important;}
+                        </style>
                         <div class="form-group">
                             <label for="title" class="col-sm-2 control-label">菜品图片</label>
+                            <input type="hidden" id="img_path" name="img_path">
                             <div class="col-sm-10">
-                                <input type="file" name="goods_img">
+                                <img src="" alt="" id="img" style="width: 200px;">
+                                <div id="uploader-demo">
+                                    <!--用来存放item-->
+                                    {{--<div id="fileList" class="uploader-list"></div>--}}
+                                    <div id="filePicker">选择图片</div>
+                                </div>
                             </div>
                         </div>
                         <div class="form-group">
@@ -254,10 +268,19 @@
                                 <input type="text" class="form-control" id="goods_name" name="goods_name" value="{{ old('goods_name') }}" placeholder="请输入菜品名">
                             </div>
                         </div>
+                        <style>
+                            #filePicker1 div:nth-child(2){width:100%!important;height:100%!important;}
+                        </style>
                         <div class="form-group">
                             <label for="title" class="col-sm-2 control-label">菜品图片</label>
+                            <input type="hidden" id="eimg_path" name="img_path">
                             <div class="col-sm-10">
-                                <input type="file" name="goods_img">
+                                <img src="" alt="" id="eimg" style="width: 200px;">
+                                <div id="uploader-demo">
+                                    <!--用来存放item-->
+                                    {{--<div id="fileList" class="uploader-list"></div>--}}
+                                    <div id="filePicker1">选择图片</div>
+                                </div>
                             </div>
                         </div>
                         <div class="form-group">
@@ -311,6 +334,74 @@
 <!-- 加载 Bootstrap 的所有 JavaScript 插件。你也可以根据需要只加载单个插件。 -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js"></script>
 <script>
+    var uploader = WebUploader.create({
+
+        // 选完文件后，是否自动上传。
+        auto: true,
+
+        // swf文件路径
+        // swf: BASE_URL + '/js/Uploader.swf',
+
+        // 文件接收服务端。
+        server: '/menus/upload',
+
+        // 选择文件的按钮。可选。
+        // 内部根据当前运行是创建，可能是input元素，也可能是flash.
+        pick: '#filePicker',
+
+        // 只允许选择图片文件。
+        accept: {
+            title: 'Images',
+            extensions: 'gif,jpg,jpeg,bmp,png',
+            mimeTypes: 'image/*'
+        },
+
+        formData:{
+            _token:'{{ csrf_token() }}'
+        },
+
+    });
+    uploader.on('uploadSuccess',function (file,response) {
+        $('#img').attr('src',response.path);
+        $('#img_path').val(response.path);
+    });
+</script>
+<script>
+    var uploader = WebUploader.create({
+
+        // 选完文件后，是否自动上传。
+        auto: true,
+
+        // swf文件路径
+        // swf: BASE_URL + '/js/Uploader.swf',
+
+        // 文件接收服务端。
+        server: '/menus/upload',
+
+        // 选择文件的按钮。可选。
+        // 内部根据当前运行是创建，可能是input元素，也可能是flash.
+        pick: '#filePicker1',
+
+        // 只允许选择图片文件。
+        accept: {
+            title: 'Images',
+            extensions: 'gif,jpg,jpeg,bmp,png',
+            mimeTypes: 'image/*'
+        },
+
+        formData:{
+            _token:'{{ csrf_token() }}'
+        },
+
+    });
+    uploader.on('uploadSuccess',function (file,response) {
+        $('#eimg').attr('src',response.path);
+        $('#eimg_path').val(response.path);
+    });
+</script>
+
+<script>
+
     function getEdit($data){
         $('#EditId').val($data['id']);
         $('#goods_name').val($data['goods_name']);
@@ -333,5 +424,23 @@
         $('#ssatisfy_rate').val($data['satisfy_rate']);
         $('#ssatisfy_count').val($data['satisfy_count']);
     }
+</script>
+<script>
+    // $('#EditModel').on('hidden.bs.modal', function (e) {
+    //     window.location.reload();
+    // })
+    function close(){
+        $("#img").attr('src',"");
+        $("#eimg").attr('src',"");
+        $("#img_path").val("");
+        $("#eimg_path").val("");
+    }
+    $('#AddModel').on('hidden.bs.modal', function (e) {
+        close();
+    });
+    $('#EditModel').on('hidden.bs.modal', function (e) {
+        close();
+    });
+
 </script>
 </body>

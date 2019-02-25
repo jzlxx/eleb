@@ -1,5 +1,9 @@
 @include('layout._header')
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+<!--引入CSS-->
+<link rel="stylesheet" type="text/css" href="/webuploader/webuploader.css">
+<!--引入JS-->
+<script type="text/javascript" src="/webuploader/webuploader.js"></script>
 <body>
 <div class="x-nav">
       <span class="layui-breadcrumb">
@@ -86,10 +90,19 @@
                                 <input type="text" class="form-control" id="title" name="name" value="{{ old('name') }}">
                             </div>
                         </div>
+                        <style>
+                            #filePicker div:nth-child(2){width:100%!important;height:100%!important;}
+                        </style>
                         <div class="form-group">
                             <label for="img" class="col-sm-2 control-label">图片</label>
+                            <input type="hidden" id="img_path" name="img_path">
                             <div class="col-sm-10">
-                                <input type="file" class="form-control" id="img" name="img">
+                                <img src="" alt="" id="img" style="width: 200px;">
+                                <div id="uploader-demo">
+                                    <!--用来存放item-->
+                                    {{--<div id="fileList" class="uploader-list"></div>--}}
+                                    <div id="filePicker">选择图片</div>
+                                </div>
                             </div>
                         </div>
                         {{ csrf_field() }}
@@ -123,10 +136,19 @@
                                 <input type="text" class="form-control" id="EditName" name="name">
                             </div>
                         </div>
+                        <style>
+                            #filePicker1 div:nth-child(2){width:100%!important;height:100%!important;}
+                        </style>
                         <div class="form-group">
                             <label for="img" class="col-sm-2 control-label">图片</label>
                             <div class="col-sm-10">
-                                <input type="file" class="form-control"  name="img">
+                                <input type="hidden" id="eimg_path" name="img_path">
+                                <img src="" alt="" id="eimg" style="width: 200px;">
+                                <div id="uploader-demo">
+                                    <!--用来存放item-->
+                                    {{--<div id="fileList" class="uploader-list"></div>--}}
+                                    <div id="filePicker1">选择图片</div>
+                                </div>
                             </div>
                         </div>
                         {{ csrf_field() }}
@@ -155,5 +177,89 @@
         $('#EditName').val($data['name']);
         $('#EditId').val($data['id']);
     }
+</script>
+<script>
+    var uploader = WebUploader.create({
+
+        // 选完文件后，是否自动上传。
+        auto: true,
+
+        // swf文件路径
+        // swf: BASE_URL + '/js/Uploader.swf',
+
+        // 文件接收服务端。
+        server: '/shopcategories/upload',
+
+        // 选择文件的按钮。可选。
+        // 内部根据当前运行是创建，可能是input元素，也可能是flash.
+        pick: '#filePicker',
+
+        // 只允许选择图片文件。
+        accept: {
+            title: 'Images',
+            extensions: 'gif,jpg,jpeg,bmp,png',
+            mimeTypes: 'image/*'
+        },
+
+        formData:{
+            _token:'{{ csrf_token() }}'
+        },
+
+    });
+    uploader.on('uploadSuccess',function (file,response) {
+        $('#img').attr('src',response.path);
+        $('#img_path').val(response.path);
+    });
+</script>
+<script>
+    var uploader = WebUploader.create({
+
+        // 选完文件后，是否自动上传。
+        auto: true,
+
+        // swf文件路径
+        // swf: BASE_URL + '/js/Uploader.swf',
+
+        // 文件接收服务端。
+        server: '/shopcategories/upload',
+
+        // 选择文件的按钮。可选。
+        // 内部根据当前运行是创建，可能是input元素，也可能是flash.
+        pick: '#filePicker1',
+
+        // 只允许选择图片文件。
+        accept: {
+            title: 'Images',
+            extensions: 'gif,jpg,jpeg,bmp,png',
+            mimeTypes: 'image/*'
+        },
+
+        formData:{
+            _token:'{{ csrf_token() }}'
+        },
+
+    });
+    uploader.on('uploadSuccess',function (file,response) {
+        $('#eimg').attr('src',response.path);
+        $('#eimg_path').val(response.path);
+    });
+</script>
+<script>
+    // $('#EditModel').on('hidden.bs.modal', function (e) {
+    //     window.location.reload();
+    // })
+    function close(){
+        $("#img").attr('src',"");
+        $("#eimg").attr('src',"");
+        $("#img_path").val("");
+        $("#eimg_path").val("");
+    }
+    $('#AddModel').on('hidden.bs.modal', function (e) {
+        close();
+    });
+    $('#EditModel').on('hidden.bs.modal', function (e) {
+        close();
+    });
+
 </script>
 </body>

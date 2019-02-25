@@ -28,6 +28,7 @@ Route::get('/', function () {
 Route::resource('shopcategories','ShopCategoryController');
 Route::post('/shopcategories/update', 'ShopCategoryController@update')->name('shopcategories.update');
 Route::get('/shopcategories/ustatus/{shopcategory}', 'ShopCategoryController@ustatus')->name('shopcategories.ustatus');
+Route::post('/shopcategories/upload','ShopCategoryController@upload')->name('shopcategories.upload');
 
 //主页欢迎页面
 Route::get('/welcome/index','WelcomeController@index')->name('welcome.index');
@@ -37,6 +38,7 @@ Route::get('/welcome/index','WelcomeController@index')->name('welcome.index');
 Route::resource('shops','ShopController');
 Route::post('/shops/update', 'ShopController@update')->name('shops.update');
 Route::get('/shops/ustatus/{shop}', 'ShopController@ustatus')->name('shops.ustatus');
+Route::post('/shops/upload','ShopController@upload')->name('shops.upload');
 
 //管理员账号
 Route::get('admins/pwd','AdminController@pwd')->name('admins.pwd');
@@ -56,3 +58,7 @@ Route::get('login', 'LoginController@create')->name('login');
 Route::post('login', 'LoginController@store')->name('login');
 Route::get('logout', 'LoginController@destroy')->name('logout');
 
+
+//活动
+Route::resource('activities','ActivityController');
+Route::post('/activities/update', 'ActivityController@update')->name('activities.update');

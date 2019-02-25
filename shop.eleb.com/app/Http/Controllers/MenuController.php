@@ -20,30 +20,25 @@ class MenuController extends Controller
 
     public function index(Request $request)
     {
-        //原始查询
+        //全部菜品
         $rows = Menu::where('shop_id','=',Auth::user()->shop_id);
 
-        //如果有分类
+        //分类
         if($request->category_id){
-            $rows = $rows
-                ->where('category_id','=',$request->category_id);
+            $rows->where('category_id','=',$request->category_id);
         }
-        //如果有名称查询
+        //名称
         if($request->keyword){
-            $rows = $rows
-                ->where('goods_name','like',"%{$request->keyword}%");
+            $rows->where('goods_name','like',"%{$request->keyword}%");
         }
-        //如果有最小
+        //最小价格
         if($request->start){
-            $rows = $rows
-                ->where('goods_price','>=',$request->start);
+            $rows->where('goods_price','>=',$request->start);
         }
-        //如果有最大
+        //最大价格
         if($request->end){
-            $rows = $rows
-                ->where('goods_price','<=',$request->end);
+            $rows->where('goods_price','<=',$request->end);
         }
-        //最后查询
         $menus = $rows->paginate(3);
         //菜品分类列表
         $menucategories = MenuCategory::all();
@@ -62,7 +57,7 @@ class MenuController extends Controller
             'goods_price'=>'required|numeric',
             'description'=>'required',
             'tips'=>'required',
-            'goods_img'=>'required|image',
+            'img_path'=>'required',
             'category_id'=>'required',
         ],[
             'goods_name.required'=>'菜品名不能为空',
@@ -71,18 +66,17 @@ class MenuController extends Controller
             'description.required'=>'描述不能为空',
             'tips.required'=>'提示不能为空',
             'category_id.required'=>'分类不能为空',
-            'goods_img.required'=>'图片不能为空',
-            'goods_img.image'=>'图片格式错误',
+            'img_path.required'=>'图片不能为空',
         ]);
-        $img = $request->file('goods_img');
-        //保存文件
-        $path = url(Storage::url($img->store('public/goods')));
+//        $img = $request->file('goods_img');
+//        //保存文件
+//        $path = url(Storage::url($img->store('public/goods')));
         $data = [
             'goods_name'=>$request->goods_name,
             'goods_price'=>$request->goods_price,
             'description'=>$request->description,
             'tips'=>$request->tips,
-            'goods_img'=>$path,
+            'goods_img'=>$request->img_path,
             'category_id'=>$request->category_id,
             'shop_id'=>Auth::user()->shop_id,
             'month_sales'=>rand(1,100),
@@ -102,7 +96,6 @@ class MenuController extends Controller
             'goods_price'=>'required|numeric',
             'description'=>'required',
             'tips'=>'required',
-            'goods_img'=>'image',
             'category_id'=>'required',
         ],[
             'goods_name.required'=>'菜品名不能为空',
@@ -111,15 +104,14 @@ class MenuController extends Controller
             'description.required'=>'描述不能为空',
             'tips.required'=>'提示不能为空',
             'category_id.required'=>'分类不能为空',
-            'goods_img.image'=>'图片格式错误',
         ]);
         $id = $request->id;
         $menu = Menu::find($id);
-        $img = $request->file('goods_img');
+        $img = $request->img_path;
         if ($img!=null){
-            $path = url(Storage::url($img->store('public/goods')));
+            $path = $img;
         }else{
-            $path = $menu->img;
+            $path = $menu->goods_img;
         }
         $data = [
             'goods_name'=>$request->goods_name,
@@ -148,5 +140,14 @@ class MenuController extends Controller
         }
         $menu->save();
         return redirect()->route('menus.index')->with('success','修改状态成功');
+    }
+
+    //接收文件
+    public function upload(Request $request)
+    {
+        $img = $request->file('file');
+        //保存文件
+        $path = Storage::url($img->store('public/goods'));
+        return (['path'=>$path]);
     }
 }

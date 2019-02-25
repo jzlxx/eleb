@@ -25,7 +25,7 @@ class RegisterController extends Controller
             [
                 'shop_category_id'=>'required|integer',
                 'shop_name'=>'required',
-                'shop_img'=>'required|image',
+                'img_path'=>'required',
                 'brand'=>'required',
                 'on_time'=>'required',
                 'fengniao'=>'required',
@@ -44,8 +44,7 @@ class RegisterController extends Controller
                 'shop_category_id.required'=>'请输入商家分类id',
                 'shop_category_id.integer'=>'商家分类id只能是整数',
                 'shop_name.required'=>'请输入商家名称',
-                'shop_img.required'=>'请上传图片',
-                'shop_img.image'=>'图片格式有误',
+                'img_path.required'=>'请上传图片',
                 'brand.required'=>'请选择是否是品牌',
                 'fengniao.required'=>'请选择是否蜂鸟配送',
                 'on_time.required'=>'请选择是否准时达',
@@ -63,15 +62,10 @@ class RegisterController extends Controller
         );
         try{
             DB::transaction(function () use($request){
-                $img = $request->file('shop_img');
-                //保存文件
-                $path = url(Storage::url($img->store('public/shop')));
-
-
                 $data_shop = [
                     'shop_category_id' => $request->shop_category_id,
                     'shop_name' => $request->shop_name,
-                    'shop_img' => $path,
+                    'shop_img' => $request->img_path,
                     'brand' => $request->brand,
                     'on_time' => $request->on_time,
                     'fengniao' => $request->fengniao,
@@ -100,5 +94,13 @@ class RegisterController extends Controller
         }catch (\Exception $e){
             return back()->withErrors(['注册失败'])->withInput();
         }
+    }
+
+    public function upload(Request $request)
+    {
+        $img = $request->file('file');
+        //保存文件
+        $path = Storage::url($img->store('public/shop'));
+        return (['path'=>$path]);
     }
 }

@@ -20,9 +20,9 @@ class MenuCategoryController extends Controller
     {
         $keyword = $request->keyword;
         if ($keyword){
-            $menucategories = MenuCategory::where('name','like',"%$keyword%")->paginate(3);
+            $menucategories = MenuCategory::where('shop_id','=',Auth::user()->shop_id)->where('name','like',"%$keyword%")->paginate(3);
         }else{
-            $menucategories = MenuCategory::paginate(3);
+            $menucategories = MenuCategory::where('shop_id','=',Auth::user()->shop_id)->paginate(3);
         }
         return view('menucategory.index',['menucategories'=>$menucategories,'keyword'=>$keyword]);
     }
@@ -46,7 +46,8 @@ class MenuCategoryController extends Controller
                 'is_selected.required'=>'是否默认分类不能为空',
             ]);
         if ($request->is_selected == 1){
-            DB::update('update menu_categories set is_selected = 0');
+//            DB::update('update menu_categories set is_selected = 0');
+            MenuCategory::where('is_selected','=',1)->where('shop_id','=',Auth::user()->shop_id)->update(['is_selected'=>0]);
         }
         $data = [
             'name'=>$request->name,
@@ -75,7 +76,8 @@ class MenuCategoryController extends Controller
         $id = $request->id;
         $menucategory = MenuCategory::find($id);
         if ($request->is_selected == 1){
-            DB::update('update menu_categories set is_selected = 0');
+//            DB::update('update menu_categories set is_selected = 0');
+            MenuCategory::where('is_selected','=',1)->where('shop_id','=',Auth::user()->shop_id)->update(['is_selected'=>0]);
         }
         $data = [
             'name'=>$request->name,
@@ -99,7 +101,8 @@ class MenuCategoryController extends Controller
 
     public function ustatus(MenuCategory $menucategory)
     {
-        DB::update('update menu_categories set is_selected = 0');
+//        DB::update('update menu_categories set is_selected = 0');
+        MenuCategory::where('is_selected','=',1)->where('shop_id','=',Auth::user()->shop_id)->update(['is_selected'=>0]);
         $menucategory->is_selected = 1;
         $menucategory->save();
         return redirect()->route('menucategories.index')->with('success','修改状态成功');

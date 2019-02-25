@@ -1,5 +1,9 @@
 @include('layout._header')
 @include('layout._boot')
+<!--引入CSS-->
+<link rel="stylesheet" type="text/css" href="/webuploader/webuploader.css">
+<!--引入JS-->
+<script type="text/javascript" src="/webuploader/webuploader.js"></script>
 <body>
 <div class="x-nav">
       <span class="layui-breadcrumb">
@@ -226,9 +230,18 @@
                                                 @endforeach
                                             </select>
                                         </div>
+                                        <style>
+                                            #filePicker div:nth-child(2){width:100%!important;height:100%!important;}
+                                        </style>
                                         <div class="form-group">
                                             <label for="exampleInputFile">店铺图片</label>
-                                            <input type="file" id="" name="shop_img">
+                                            <input type="hidden" id="img_path" name="img_path">
+                                            <img src="" alt="" id="img" style="width: 200px;">
+                                            <div id="uploader-demo">
+                                                <!--用来存放item-->
+                                                {{--<div id="fileList" class="uploader-list"></div>--}}
+                                                <div id="filePicker">选择图片</div>
+                                            </div>
                                         </div>
                                         <div class="form-group">
                                             <label for="exampleInputEmail1">起送金额</label>
@@ -379,5 +392,43 @@
         $("#zhun1[value="+$data['zhun']+"]").attr("checked",true);
         $('#shop_img1').attr('src',$data['shop_img'])
     }
+</script>
+<script>
+    $('#EditModel').on('hidden.bs.modal', function (e) {
+        window.location.reload();
+    })
+</script>
+<script>
+    var uploader = WebUploader.create({
+
+        // 选完文件后，是否自动上传。
+        auto: true,
+
+        // swf文件路径
+        // swf: BASE_URL + '/js/Uploader.swf',
+
+        // 文件接收服务端。
+        server: '/shops/upload',
+
+        // 选择文件的按钮。可选。
+        // 内部根据当前运行是创建，可能是input元素，也可能是flash.
+        pick: '#filePicker',
+
+        // 只允许选择图片文件。
+        accept: {
+            title: 'Images',
+            extensions: 'gif,jpg,jpeg,bmp,png',
+            mimeTypes: 'image/*'
+        },
+
+        formData:{
+            _token:'{{ csrf_token() }}'
+        },
+
+    });
+    uploader.on('uploadSuccess',function (file,response) {
+        $('#img').attr('src',response.path);
+        $('#img_path').val(response.path);
+    });
 </script>
 </body>

@@ -179,6 +179,8 @@ return [
 
         Mews\Captcha\CaptchaServiceProvider::class,
 
+        Jacobcyl\AliOSS\AliOssServiceProvider::class,
+
     ],
 
     /*

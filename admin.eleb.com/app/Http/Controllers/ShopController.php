@@ -37,7 +37,6 @@ class ShopController extends Controller
             [
                 'shop_category_id'=>'required|integer',
                 'shop_name'=>'required',
-                'shop_img'=>'image',
                 'brand'=>'required',
                 'on_time'=>'required',
                 'fengniao'=>'required',
@@ -53,7 +52,6 @@ class ShopController extends Controller
                 'shop_category_id.required'=>'请输入商家分类id',
                 'shop_category_id.integer'=>'商家分类id只能是整数',
                 'shop_name.required'=>'请输入商家名称',
-                'shop_img.image'=>'图片格式有误',
                 'brand.required'=>'请选择是否是品牌',
                 'fengniao.required'=>'请选择是否蜂鸟配送',
                 'on_time.required'=>'请选择是否准时达',
@@ -68,9 +66,9 @@ class ShopController extends Controller
         );
         $id = $request->id;
         $shop = Shop::find($id);
-        $img = $request->file('shop_img');
+        $img = $request->img_path;
         if ($img!=null){
-            $path = url(Storage::url($img->store('public/shop')));
+            $path = $img;
         }else{
             $path = $shop->shop_img;
         }
@@ -111,5 +109,13 @@ class ShopController extends Controller
         DB::delete("delete from users where shop_id = $id");
         $shop->delete();
         return redirect()->route('shops.index')->with('success','删除商家成功');
+    }
+
+    public function upload(Request $request)
+    {
+        $img = $request->file('file');
+        //保存文件
+        $path = Storage::url($img->store('public/shop'));
+        return (['path'=>$path]);
     }
 }
