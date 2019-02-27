@@ -84,13 +84,13 @@
                         <div class="form-group">
                             <label for="title" class="col-sm-2 control-label">开始时间</label>
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" id="sstart_time" value="" name="start_time" readonly>
+                                <input type="datetime-local" class="form-control" id="sstart_time" value="" name="start_time" readonly>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="title" class="col-sm-2 control-label">结束时间</label>
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" id="send_time" value="" name="end_time" readonly>
+                                <input type="datetime-local" class="form-control" id="send_time" value="" name="end_time" readonly>
                             </div>
                         </div>
                         <div class="form-group">
@@ -132,13 +132,13 @@
                         <div class="form-group">
                             <label for="title" class="col-sm-2 control-label">开始时间</label>
                             <div class="col-sm-10">
-                                <input type="date" class="form-control" id="" value="{{ date('Y-m-d') }}" name="start_time" min="{{ date('Y-m-d') }}" max="{{ date('Y-m-d',time()+60*60*24*30) }}">
+                                <input type="datetime-local" class="form-control" id="" value="{{ date('Y-m-d') }}" name="start_time" min="{{ date('Y-m-d') }}" max="{{ date('Y-m-d',time()+60*60*24*30) }}">
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="title" class="col-sm-2 control-label">结束时间</label>
                             <div class="col-sm-10">
-                                <input type="date" class="form-control" id="" value="{{ date('Y-m-d') }}" name="end_time" min="{{ date('Y-m-d') }}" max="{{ date('Y-m-d',time()+60*60*24*30) }}">
+                                <input type="datetime-local" class="form-control" id="" value="{{ date('Y-m-d') }}" name="end_time" min="{{ date('Y-m-d') }}" max="{{ date('Y-m-d',time()+60*60*24*30) }}">
                             </div>
                         </div>
                         <div class="form-group">
@@ -181,20 +181,19 @@
                         <div class="form-group">
                             <label for="title" class="col-sm-2 control-label">开始时间</label>
                             <div class="col-sm-10">
-                                <input type="date" class="form-control" id="start_time" value="{{ date('Y-m-d') }}" name="start_time" min="{{ date('Y-m-d') }}" max="{{ date('Y-m-d',time()+60*60*24*30) }}">
+                                <input type="datetime-local" class="form-control" id="start_time" value="" name="start_time" min="{{ date('Y-m-d').'T'.date("H:i") }}" max="{{ date('Y-m-d',time()+60*60*24*30*60).'T'.date("H:i") }}">
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="title" class="col-sm-2 control-label">结束时间</label>
                             <div class="col-sm-10">
-                                <input type="date" class="form-control" id="end_time" value="{{ date('Y-m-d') }}" name="end_time" min="{{ date('Y-m-d') }}" max="{{ date('Y-m-d',time()+60*60*24*30) }}">
+                                <input type="datetime-local" class="form-control" id="end_time" value="" name="end_time"  min="{{ date('Y-m-d').'T'.date("H:i") }}" max="{{ date('Y-m-d',time()+60*60*24*30*60).'T'.date("H:i") }}">
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="img" class="col-sm-2 control-label">活动详情</label>
                             <div class="col-sm-10">
                                 <script id="content" name="content" type="text/plain">
-
                                 </script>
                             </div>
                         </div>
@@ -233,6 +232,14 @@
     function getEdit($data){
         $('#EditId').val($data['id']);
         $('#title').val($data['title']);
+        var start = $data['start_time'];
+        var end = $data['end_time'];
+        var new_start = start.replace(" ","T");
+        var new_end = end.replace(" ","T");
+        $('#start_time').val(new_start);
+        $('#end_time').val(new_end);
+        var  text= $data['content'];
+        UE.getEditor('content').execCommand('insertHtml', text);
         // $('#content').html($data['content']);
         // $('#start_time').val($data['start_time']);
         // $('#end_time').val($data['end_time']);
@@ -241,8 +248,17 @@
     function getShow($data){
         $('#stitle').val($data['title']);
         $('#scontent').html($data['content']);
-        $('#sstart_time').val($data['start_time']);
-        $('#send_time').val($data['end_time']);
+        var start = $data['start_time'];
+        var end = $data['end_time'];
+        var new_start = start.replace(" ","T");
+        var new_end = end.replace(" ","T");
+        $('#sstart_time').val(new_start);
+        $('#send_time').val(new_end);
     }
+</script>
+<script>
+    $('#EditModel').on('hidden.bs.modal', function (e) {
+        window.location.reload();
+    })
 </script>
 </body>

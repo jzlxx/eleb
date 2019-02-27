@@ -43,7 +43,7 @@ class ActivityController extends Controller
                 'end_time'=>'required|after:start_time',
             ],
             [
-                'name.required'=>'标题不能为空',
+                'title.required'=>'标题不能为空',
                 'content.required'=>'详情不能为空',
                 'start_time.required'=>'开始时间不能为空',
                 'end_time.required'=>'结束时间不能为空',
@@ -60,28 +60,34 @@ class ActivityController extends Controller
         return redirect()->route('activities.index')->with('success','添加活动成功');
     }
 
-//    public function update(Request $request)
-//    {
-//        $this->validate($request,
-//            [
-//                'title'=>'required',
-//            ],
-//            [
-//                'name.required'=>'标题不能为空',
-//            ]);
-//        $id = $request->id;
-//        $activity = Activity::find($id);
-//
-//        if ($request->start_time){
-//
-//        }
-//        $data = [
-//            'name'=>$request->name,
-//            'content'=>$request->content,
-//        ];
-//        $activity->update($data);
-//        return redirect()->route('activities.index')->with('success','修改活动成功');
-//    }
+    public function update(Request $request)
+    {
+        $this->validate($request,
+            [
+                'title'=>'required',
+                'content'=>'required',
+                'start_time'=>'required',
+                'end_time'=>'required|after:start_time',
+            ],
+            [
+                'title.required'=>'标题不能为空',
+                'content.required'=>'详情不能为空',
+                'start_time.required'=>'开始时间不能为空',
+                'end_time.required'=>'结束时间不能为空',
+                'end_time.after'=>'结束时间不能早于开始时间',
+
+            ]);
+        $id = $request->id;
+        $activity = Activity::find($id);
+        $data = [
+            'title'=>$request->title,
+            'content'=>$request->content,
+            'start_time'=>$request->start_time,
+            'end_time'=>$request->end_time,
+        ];
+        $activity->update($data);
+        return redirect()->route('activities.index')->with('success','修改活动成功');
+    }
 
     public function destroy(Activity $activity)
     {
