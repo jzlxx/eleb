@@ -14,6 +14,13 @@
 Route::get('/', function () {
     return view('welcome');
 });
-
+//商家列表
 Route::get('/businessList','ApiController@businessList');
+//获取指定商家
 Route::get('/business','ApiController@business');
+//注册
+Route::post('/regist','ApiController@regist');
+//短信验证
+Route::get('/sms','ApiController@sms');
+//登录
+Route::post('/loginCheck','ApiController@loginCheck');
