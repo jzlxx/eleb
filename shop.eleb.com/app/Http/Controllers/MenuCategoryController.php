@@ -52,7 +52,7 @@ class MenuCategoryController extends Controller
         $data = [
             'name'=>$request->name,
             'description'=>$request->description,
-            'type_accumulation'=>range('a','z')[rand(0,25)],
+            'type_accumulation'=>range('a','z')[rand(0,25)].uniqid(),
             'shop_id'=>Auth::user()->shop_id,
             'is_selected'=>$request->is_selected,
         ];

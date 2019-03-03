@@ -24,3 +24,15 @@ Route::post('/regist','ApiController@regist');
 Route::get('/sms','ApiController@sms');
 //登录
 Route::post('/loginCheck','ApiController@loginCheck');
+//新增地址
+Route::post('/addAddress','ApiController@addAddress');
+//地址列表
+Route::get('/addressList','ApiController@addressList');
+//指定地址
+Route::get('/address','ApiController@address');
+//保存修改地址
+Route::post('/editAddress','ApiController@editAddress');
+//保存购物车
+Route::post('/addCart','ApiController@addCart');
+//获取购物车
+Route::get('/cart','ApiController@cart');

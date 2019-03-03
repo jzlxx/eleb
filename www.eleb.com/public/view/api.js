@@ -10,13 +10,13 @@ window.api = {
   // 忘记密码接口
   forgetPassword: '/forgetPassword.php',
   // 地址列表接口
-  addressList: '/addressList.php',
+  addressList: '/addressList',
   // 指定地址接口
-  address: '/address.php',
+  address: '/address',
   // 保存新增地址接口
-  addAddress: '/addAddress.php',
+  addAddress: '/addAddress',
   // 保存修改地址接口
-  editAddress: '/editAddress.php',
+  editAddress: '/editAddress',
   // 获得订单列表接口
   orderList: '/orderList.php',
   // 获得指定订单接口
@@ -26,9 +26,9 @@ window.api = {
   // 获得指定商家接口
   business: '/business',
   // 保存购物车接口
-  addCart: '/addCart.php',
+  addCart: '/addCart',
   // 获取购物车数据接口
-  cart: '/cart.php',
+  cart: '/cart',
   // 添加订单接口
   addOrder: '/addorder.php',
   // 支付接口

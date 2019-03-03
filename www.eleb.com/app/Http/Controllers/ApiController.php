@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Address;
+use App\Models\Cart;
 use App\Models\Member;
 use App\Models\Menu;
 use App\Models\MenuCategory;
@@ -12,6 +14,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Redis;
+use Illuminate\Support\Facades\Validator;
 use Qcloud\Sms\SmsSingleSender;
 
 class ApiController extends Controller
@@ -74,7 +77,11 @@ class ApiController extends Controller
             ],
         ];
         foreach ($menu_categories as $mc){
-            $mc['goods_list'] = Menu::where('category_id','=',$mc->id)->get();
+            $menus = Menu::where('category_id','=',$mc->id)->get();
+            $mc['goods_list'] = $menus;
+            foreach ($mc['goods_list'] as $menu){
+                $menu['goods_id'] = $menu->id;
+            }
         }
         $shop['commodity'] = $menu_categories;
         $shop['evaluate'] = $evaluate;
@@ -84,6 +91,14 @@ class ApiController extends Controller
     //注册
     public function regist(Request $request)
     {
+        $member = Member::where('tel','=',$request->tel)->get();
+        if(count($member)){
+            $data =  [
+                "status"=> "false",
+                "message"=> "号码已注册",
+            ];
+            return $data;
+        }
         if ($request->sms == Redis::get($request->tel)) {
             $data = [
                 'username' => $request->username,
@@ -109,6 +124,17 @@ class ApiController extends Controller
     //短信验证
     public function sms(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'tel' => 'required|numeric|digits_between:11,11',
+        ]);
+
+        if ($validator->fails()) {
+            return [
+                "status"=> "false",
+                "message"=> implode(' ',$validator->errors()->all()),//$validator->errors()->first('tel')
+            ];
+        }
+
         $appid = 1400189767; // 1400开头
 
         // 短信应用SDK AppKey
@@ -167,6 +193,135 @@ class ApiController extends Controller
                 "message"=>"登录失败",
             ];
         }
+        return $result;
+    }
+
+    //新增地址
+    public function addAddress(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required',
+            'tel' => 'required|numeric|digits_between:11,11',
+            'provence' => 'required',
+            'city' => 'required',
+            'area' => 'required',
+            'detail_address' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return [
+                "status"=> "false",
+                "message"=> implode(' ',$validator->errors()->all()),//$validator->errors()->first('tel')
+            ];
+        }
+        $data = [
+            'user_id'=>Auth::user()->id,
+            'province'=>$request->provence,
+            'city'=>$request->city,
+            'county'=>$request->area,
+            'address'=>$request->detail_address,
+            'tel'=>$request->tel,
+            'name'=>$request->name,
+        ];
+        Address::create($data);
+        return [
+            "status"=> "true",
+            "message"=> "添加成功"
+        ];
+    }
+    
+    //地址列表
+    public function addressList()
+    {
+        $addresses = Address::where('user_id','=',Auth::user()->id)->get();
+        foreach ($addresses as $address){
+            $address['detail_address'] = $address->address;
+            $address['provence'] = $address->province;
+            $address['area'] = $address->county;
+        }
+
+        return $addresses;
+    }
+
+    //指定地址
+    public function address(Request $request)
+    {
+        $address = Address::find($request->id);
+        $address['detail_address'] = $address->address;
+        $address['provence'] = $address->province;
+        $address['area'] = $address->county;
+
+        return $address;
+    }
+
+    //保存修改地址
+    public function editAddress(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required',
+            'tel' => 'required|numeric|digits_between:11,11',
+            'provence' => 'required',
+            'city' => 'required',
+            'area' => 'required',
+            'detail_address' => 'required',
+        ]);
+        if ($validator->fails()) {
+            return [
+                "status"=> "false",
+                "message"=> implode(' ',$validator->errors()->all()),//$validator->errors()->first('tel')
+            ];
+        }
+        $address = Address::find($request->id);
+        $data = [
+            'province'=>$request->provence,
+            'city'=>$request->city,
+            'county'=>$request->area,
+            'address'=>$request->detail_address,
+            'tel'=>$request->tel,
+            'name'=>$request->name,
+        ];
+        $address->update($data);
+
+        return [
+            "status"=> "true",
+            "message"=> "修改成功"
+        ];
+    }
+    
+    //保存购物车
+    public function addCart(Request $request)
+    {
+        $goodslist = $request->goodsList;
+        $goodscount = $request->goodsCount;
+        for($i = 0;$i < count($goodslist);$i++){
+            $data = [
+                'user_id'=>Auth::user()->id,
+                'goods_id'=>$goodslist[$i],
+                'amount'=>$goodscount[$i],
+            ];
+            Cart::create($data);
+        }
+        return [
+            "status"=> "true",
+            "message"=> "添加成功"
+        ];
+    }
+
+    //获取购物车
+    public function cart()
+    {
+        $id = Auth::user()->id;
+        $carts = Cart::where('user_id','=',$id)->get();
+        $totalCost = 0;
+        foreach ($carts as $cart){
+            $good= Menu::find($cart->goods_id);
+            $cart['goods_name'] = $good->goods_name;
+            $cart['goods_img'] = $good->goods_img;
+            $cart['goods_price'] = $good->goods_price;
+            $totalCost += $cart->amount * $cart->goods_price;
+        }
+        $result['goods_list'] = $carts;
+        $result['totalCost'] = $totalCost;
         return $result;
     }
 }
