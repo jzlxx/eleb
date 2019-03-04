@@ -36,3 +36,13 @@ Route::post('/editAddress','ApiController@editAddress');
 Route::post('/addCart','ApiController@addCart');
 //获取购物车
 Route::get('/cart','ApiController@cart');
+//添加订单
+Route::post('/addorder','ApiController@addorder');
+//指定订单
+Route::get('/order','ApiController@order');
+//订单列表
+Route::get('/orderList','ApiController@orderList');
+//修改密码
+Route::post('/changePassword','ApiController@changePassword');
+//重置密码
+Route::post('/forgetPassword','ApiController@forgetPassword');

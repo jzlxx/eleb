@@ -7,6 +7,8 @@ use App\Models\Cart;
 use App\Models\Member;
 use App\Models\Menu;
 use App\Models\MenuCategory;
+use App\Models\Order;
+use App\Models\OrderDetail;
 use App\Models\Shop;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -159,7 +161,7 @@ class ApiController extends Controller
         }
 
         if ($rsp->errmsg == 'OK'){
-            Redis::setex($phoneNumber,20,$params[0]);
+            Redis::setex($phoneNumber,300,$params[0]);
             $res = [
                 "status"=> "true",
                 "message"=> "获取短信验证码成功"
@@ -291,6 +293,8 @@ class ApiController extends Controller
     //保存购物车
     public function addCart(Request $request)
     {
+        $id = Auth::user()->id;
+        Cart::where('user_id','=',$id)->delete();
         $goodslist = $request->goodsList;
         $goodscount = $request->goodsCount;
         for($i = 0;$i < count($goodslist);$i++){
@@ -323,5 +327,220 @@ class ApiController extends Controller
         $result['goods_list'] = $carts;
         $result['totalCost'] = $totalCost;
         return $result;
+    }
+
+    //添加订单
+    public function addorder(Request $request)
+    {
+        $user_id = Auth::user()->id;
+        if (!$user_id){
+            [
+                "status"=> "false",
+                "message"=> "请先登录",
+            ];
+        }
+        $address_id = $request->address_id;
+        if (!$address_id){
+            return [
+                "status"=> "false",
+                "message"=> "请选择收货地址",
+            ];
+        }
+        $shop_id = Menu::find(Cart::where('user_id','=',$user_id)->first()->goods_id)->shop_id;
+        $address = Address::find($address_id);
+        $carts = Cart::where('user_id','=',$user_id)->get();
+        $total = 0;
+        foreach ($carts as $cart){
+            $good = Menu::find($cart->goods_id);
+            $total += $cart->amount * $good->goods_price;
+        }
+        $order_id = "";
+        try {
+            DB::transaction(function () use($request,$user_id,$shop_id,$address,$total,$carts,&$order_id) {
+                $data_order = [
+                    'user_id' => $user_id,
+                    'shop_id' => $shop_id,
+                    'sn' => date('Ymd').mt_rand(10000, 99999),
+                    'province' => $address->province,
+                    'city' => $address->city,
+                    'county' => $address->county,
+                    'address' => $address->address,
+                    'tel' => $address->tel,
+                    'name' => $address->name,
+                    'total' => $total,
+                    'status' => 0,
+                    'out_trade_no' => uniqid(),
+                ];
+                $order = Order::create($data_order);
+
+                $order_id = $order->id;
+                foreach ($carts as $cart) {
+                    $good = Menu::find($cart->goods_id);
+                    $data_goods = [
+                        'order_id' => $order_id,
+                        'goods_id' => $cart->goods_id,
+                        'amount' => $cart->amount,
+                        'goods_name' => $good->goods_name,
+                        'goods_img' => $good->goods_img,
+                        'goods_price' => $good->goods_price,
+                    ];
+                    OrderDetail::create($data_goods);
+                }
+            });
+            return [
+                "status"=>"true",
+                "message"=>"添加成功",
+                "order_id"=>$order_id,
+            ];
+        }catch (\Exception $e){
+            return [
+                "status"=> "false",
+                "message"=> "添加失败",
+            ];
+        }
+    }
+    
+    //指定订单
+    public function order(Request $request)
+    {
+        $order_id = $request->id;
+        $order = Order::find($order_id);
+        $shop = Shop::find($order->shop_id);
+        $result = [];
+        $result['id'] = $order->id;
+        $result['shop_id'] = $order->shop_id;
+        $result['order_code'] = $order->sn;
+        $result['order_birth_time'] = $order->created_at->toArray()['formatted'];
+        $order_status = "";
+        switch ($order->status){
+            case -1:
+                $order_status = "已取消";
+                break;
+            case 0:
+                $order_status = "待付款";
+                break;
+            case 1:
+                $order_status = "待发货";
+                break;
+            case 2:
+                $order_status = "待确认";
+                break;
+            case 3:
+                $order_status = "完成";
+                break;
+        }
+        $result['order_status'] = $order_status;
+        $result['shop_name'] = $shop->shop_name;
+        $result['shop_img'] = $shop->shop_img;
+        $result['order_price'] = $order->total;
+        $result['order_address'] = $order->address;
+        $goods = OrderDetail::where('order_id','=',$order_id)->get();
+        $result['goods_list'] = $goods;
+        return $result;
+    }
+
+    //订单列表
+    public function orderList()
+    {
+
+        $orders = Order::where('user_id','=',Auth::user()->id)->get();
+        $res = [];
+        foreach ($orders as $order){
+            $shop = Shop::find($order->shop_id);
+            $result = [];
+            $result['id'] = $order->id;
+            $result['shop_id'] = $order->shop_id;
+            $result['order_code'] = $order->sn;
+            $result['order_birth_time'] = $order->created_at->toArray()['formatted'];
+            $order_status = "";
+            switch ($order->status){
+                case -1:
+                    $order_status = "已取消";
+                    break;
+                case 0:
+                    $order_status = "待付款";
+                    break;
+                case 1:
+                    $order_status = "待发货";
+                    break;
+                case 2:
+                    $order_status = "待确认";
+                    break;
+                case 3:
+                    $order_status = "完成";
+                    break;
+            }
+            $result['order_status'] = $order_status;
+            $result['shop_name'] = $shop->shop_name;
+            $result['shop_img'] = $shop->shop_img;
+            $result['order_price'] = $order->total;
+            $result['order_address'] = $order->address;
+            $goods = OrderDetail::where('order_id','=',$order->id)->get();
+            $result['goods_list'] = $goods;
+
+            $res[] = $result;
+        }
+        return $res;
+    }
+
+    //修改密码
+    public function changePassword(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'oldPassword' => 'required',
+            'newPassword' => 'required',
+        ]);
+        if ($validator->fails()) {
+            return [
+                "status"=> "false",
+                "message"=> implode(' ',$validator->errors()->all()),
+            ];
+        }
+        $user = auth()->user();
+        $result=Hash::check($request->oldPassword,$user->password);
+        if($result){
+            $user->update(
+                ['password'=>Hash::make($request->newPassword)]
+            );
+            return [
+                "status"=>"true",
+                "message"=>"修改成功"
+            ];
+        }else{
+            return [
+                "status"=>"false",
+                "message"=>"修改失败"
+            ];
+        }
+    }
+
+    //重置密码
+    public function forgetPassword(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'tel' => 'required|numeric|digits_between:11,11',
+            'sms' => 'required',
+            'password' => 'required',
+        ]);
+        if ($validator->fails()) {
+            return [
+                "status"=> "false",
+                "message"=> implode(' ',$validator->errors()->all()),
+            ];
+        }
+
+        if ($request->sms == Redis::get($request->tel)) {
+            Member::where('tel','=',$request->tel)->update(['password'=>Hash::make($request->password)]);
+            return [
+                "status"=>"true",
+                "message"=>"重置成功"
+            ];
+        }else{
+            return [
+                "status"=>"false",
+                "message"=>"验证码错误"
+            ];
+        }
+
     }
 }
