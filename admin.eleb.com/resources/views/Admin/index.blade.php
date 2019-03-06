@@ -42,8 +42,8 @@
             <td>{{ $admin->name }}</td>
             <td>{{ $admin->email }}</td>
             <td class="td-manage">
-                {{--<a class="btn btn-info" href="#" role="button" data-toggle="modal" data-target="#ShowModel" onclick="getShow({{ $admin }})">查看</a>--}}
-                {{--<a class="btn btn-warning" href="#" role="button" data-toggle="modal" data-target="#EditModel" onclick="getEdit({{ $admin }})">修改</a>--}}
+                <a class="btn btn-info" href="#" role="button" data-toggle="modal" data-target="#ShowModel" onclick="getShow([{{ $admin }},{{ $admin->getRoleNames() }}])">查看</a>
+                <a class="btn btn-warning" href="#" role="button" data-toggle="modal" data-target="#EditModel" onclick="getEdit([{{ $admin }},{{ $admin->getRoleNames() }},{{ $roles }}])">修改角色</a>
                 <form action="{{ route('admins.destroy',[$admin]) }}" method="post" style="display: inline">
                     {{ csrf_field() }}
                     {{ method_field('delete') }}
@@ -55,6 +55,52 @@
         </tbody>
     </table>
     {{ $admins->appends(['keyword'=>$keyword])->links() }}
+
+
+    <div class="modal fade" id="ShowModel" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" >
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">管理员详情</h4>
+                </div>
+                <div class="modal-body">
+                    <div style=";margin: 50px 50px">
+                        <form action="" method="post" enctype="multipart/form-data">
+                            <div class="row">
+                                <div class="form-group">
+                                    <label for="exampleInputEmail1">用户名</label>
+                                    <input type="text" class="form-control" id="sname" name="name"  readonly>
+                                </div>
+                                <div class="form-group">
+                                    <label for="exampleInputEmail1">邮箱</label>
+                                    <input type="text" class="form-control" id="semail" name="email" readonly>
+                                </div>
+                                <div class="form-group">
+                                    <label for="title">角色</label>
+                                    <br/>
+                                    <div id="sRole">
+
+                                    </div>
+                                    {{--@foreach($roles as $role)--}}
+                                        {{--<input type="checkbox"  value="{{ $role->name }}" name="role[]">{{ $role->name }}<br/>--}}
+                                    {{--@endforeach--}}
+                                </div>
+                                {{--{{ csrf_field() }}--}}
+                                {{--<div>--}}
+                                    {{--<button type="submit" class="btn btn-default">提交</button>--}}
+                                {{--</div>--}}
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <div class="modal fade" id="AddModel" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" >
         <div class="modal-dialog" role="document">
@@ -70,15 +116,22 @@
                                 <div class="row">
                                         <div class="form-group">
                                             <label for="exampleInputEmail1">用户名</label>
-                                            <input type="text" class="form-control" id="name" name="name" placeholder="请输入用户名" value="{{ old('name') }}">
+                                            <input type="text" class="form-control" id="" name="name" placeholder="请输入用户名" value="{{ old('name') }}">
                                         </div>
                                         <div class="form-group">
                                             <label for="exampleInputEmail1">邮箱</label>
-                                            <input type="text" class="form-control" id="email" name="email" placeholder="请输入邮箱" value="{{ old('email') }}">
+                                            <input type="text" class="form-control" id="" name="email" placeholder="请输入邮箱" value="{{ old('email') }}">
                                         </div>
                                         <div class="form-group">
                                             <label for="exampleInputEmail1">密码</label>
-                                            <input type="password" class="form-control" id="password" name="password" placeholder="请输入密码" >
+                                            <input type="password" class="form-control" id="" name="password" placeholder="请输入密码" >
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="title">角色</label>
+                                            <br/>
+                                            @foreach($roles as $role)
+                                                <input type="checkbox"  value="{{ $role->name }}" name="role[]">{{ $role->name }}<br/>
+                                            @endforeach
                                         </div>
                                         {{ csrf_field() }}
                                         <div>
@@ -94,14 +147,78 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade" id="EditModel" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" >
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">修改角色</h4>
+                </div>
+                <div class="modal-body">
+                    <div style=";margin: 50px 50px">
+                        <form action="{{ route('admins.rupdate') }}" method="post" enctype="multipart/form-data">
+                            <input type="hidden" value="" id="EditId" name="id">
+                            <div class="row">
+                                {{--<div class="form-group">--}}
+                                    {{--<label for="exampleInputEmail1">用户名</label>--}}
+                                    {{--<input type="text" class="form-control" id="name" name="name" placeholder="请输入用户名" value="{{ old('name') }}">--}}
+                                {{--</div>--}}
+                                {{--<div class="form-group">--}}
+                                    {{--<label for="exampleInputEmail1">邮箱</label>--}}
+                                    {{--<input type="text" class="form-control" id="email" name="email" placeholder="请输入邮箱" value="{{ old('email') }}">--}}
+                                {{--</div>--}}
+                                {{--<div class="form-group">--}}
+                                    {{--<label for="exampleInputEmail1">密码</label>--}}
+                                    {{--<input type="password" class="form-control" id="password" name="password" placeholder="请输入密码" >--}}
+                                {{--</div>--}}
+                                <div class="form-group">
+                                    <label for="title">角色</label>
+                                    <br/>
+                                    @foreach($roles as $role)
+                                        <input type="checkbox" id="{{ $role->id }}" value="{{ $role->name }}" name="role[]">{{ $role->name }}<br/>
+                                    @endforeach
+                                </div>
+                                {{ csrf_field() }}
+                                <div>
+                                    <button type="submit" class="btn btn-default">提交</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 <script>
-    // function getEdit($data){
-    //     $('#EditId').val($data['id']);
-    //     $('#name').val($data['name']);
-    //     $('#email').val($data['email'])
-    //     $('#password').val($data['password'])
-    // }
+    function getEdit($data){
+        $('#EditId').val($data[0]['id']);
+        // $('#name').val($data[0]['name']);
+        // $('#email').val($data[0]['email']);
+        // $('#password').val($data[0]['password']);
+        for(var i =0;i < $data[2].length;i++){
+            if($data[1].includes( $("#"+$data[2][i]['id']).val())){
+                $("#"+$data[2][i]['id']).attr("checked",true);
+            }
+        }
+    }
 
+    function getShow($data){
+        $('#sname').val($data[0]['name']);
+        $('#semail').val($data[0]['email']);
+        for(var i =0;i < $data[1].length;i++){
+            var roleName = " <p>"+$data[1][i]+"</p>";
+            $('#sRole').append(roleName);
+        }
+    }
+</script>
+<script>
+    $('#EditModel,#ShowModel').on('hidden.bs.modal', function (e) {
+        window.location.reload();
+    })
 </script>
 </body>

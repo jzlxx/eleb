@@ -45,3 +45,16 @@ Route::post('/menus/upload','MenuController@upload')->name('menus.upload');
 
 //活动
 Route::resource('activities','ActivityController');
+
+//订单管理
+Route::resource('orders','OrderController');
+Route::get('/orders/ustatus/{order}', 'OrderController@ustatus')->name('orders.ustatus');
+Route::get('/orders/fstatus/{order}', 'OrderController@fstatus')->name('orders.fstatus');
+
+//订单统计
+Route::get('/count/order_week', 'CountController@order_week')->name('count.order_week');
+Route::get('/count/order_month', 'CountController@order_month')->name('count.order_month');
+
+//菜品销量统计
+Route::get('/count/goods_week', 'CountController@goods_week')->name('count.goods_week');
+Route::get('/count/goods_month', 'CountController@goods_month')->name('count.goods_month');

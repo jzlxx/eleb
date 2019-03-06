@@ -44,6 +44,7 @@ Route::post('/shops/upload','ShopController@upload')->name('shops.upload');
 Route::get('admins/pwd','AdminController@pwd')->name('admins.pwd');
 Route::post('/admins/pupdate', 'AdminController@pupdate')->name('admins.pupdate');
 Route::resource('admins','AdminController');
+Route::post('/admins/rupdate', 'AdminController@rupdate')->name('admins.rupdate');
 //Route::get('/admins/ustatus/{admin}', 'AdminController@ustatus')->name('admins.ustatus');
 
 
@@ -62,3 +63,14 @@ Route::get('logout', 'LoginController@destroy')->name('logout');
 //活动
 Route::resource('activities','ActivityController');
 Route::post('/activities/update', 'ActivityController@update')->name('activities.update');
+
+//会员管理
+Route::resource('members','MemberController');
+Route::get('/members/ustatus/{member}', 'MemberController@ustatus')->name('members.ustatus');
+
+//权限管理
+Route::resource('permissions','PermissionController');
+
+//角色管理
+Route::resource('roles','RoleController');
+Route::post('/roles/update', 'RoleController@update')->name('roles.update');

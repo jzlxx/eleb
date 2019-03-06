@@ -19,6 +19,7 @@ class CreateMembersTable extends Migration
             $table->string('password');
             $table->string('tel');
             $table->string('rememberToken');
+            $table->integer('status')->default(0);
             $table->timestamps();
         });
     }

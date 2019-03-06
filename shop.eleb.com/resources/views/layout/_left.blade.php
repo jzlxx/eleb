@@ -80,33 +80,15 @@
             </li>
             <li>
                 <a href="javascript:;">
-                    <i class="iconfont">&#xe726;</i>
-                    <cite>管理员管理</cite>
+                    <i class="iconfont">&#xe723;</i>
+                    <cite>订单管理</cite>
                     <i class="iconfont nav_right">&#xe697;</i>
                 </a>
                 <ul class="sub-menu">
                     <li>
-                        <a _href="admin-list.html">
+                        <a _href="{{ route('orders.index') }}">
                             <i class="iconfont">&#xe6a7;</i>
-                            <cite>管理员列表</cite>
-                        </a>
-                    </li >
-                    <li>
-                        <a _href="admin-role.html">
-                            <i class="iconfont">&#xe6a7;</i>
-                            <cite>角色管理</cite>
-                        </a>
-                    </li >
-                    <li>
-                        <a _href="admin-cate.html">
-                            <i class="iconfont">&#xe6a7;</i>
-                            <cite>权限分类</cite>
-                        </a>
-                    </li >
-                    <li>
-                        <a _href="admin-rule.html">
-                            <i class="iconfont">&#xe6a7;</i>
-                            <cite>权限管理</cite>
+                            <cite>订单列表</cite>
                         </a>
                     </li >
                 </ul>
@@ -114,56 +96,32 @@
             <li>
                 <a href="javascript:;">
                     <i class="iconfont">&#xe6ce;</i>
-                    <cite>系统统计</cite>
+                    <cite>销售统计</cite>
                     <i class="iconfont nav_right">&#xe697;</i>
                 </a>
                 <ul class="sub-menu">
                     <li>
-                        <a _href="echarts1.html">
+                        <a _href="{{ route('count.order_week') }}">
                             <i class="iconfont">&#xe6a7;</i>
-                            <cite>拆线图</cite>
+                            <cite>一周订单</cite>
                         </a>
                     </li >
                     <li>
-                        <a _href="echarts2.html">
+                        <a _href="{{ route('count.order_month') }}">
                             <i class="iconfont">&#xe6a7;</i>
-                            <cite>柱状图</cite>
+                            <cite>三月订单</cite>
                         </a>
                     </li>
                     <li>
-                        <a _href="echarts3.html">
+                        <a _href="{{ route('count.goods_week') }}">
                             <i class="iconfont">&#xe6a7;</i>
-                            <cite>地图</cite>
+                            <cite>一周菜品销量</cite>
                         </a>
                     </li>
                     <li>
-                        <a _href="echarts4.html">
+                        <a _href="{{ route('count.goods_month') }}">
                             <i class="iconfont">&#xe6a7;</i>
-                            <cite>饼图</cite>
-                        </a>
-                    </li>
-                    <li>
-                        <a _href="echarts5.html">
-                            <i class="iconfont">&#xe6a7;</i>
-                            <cite>雷达图</cite>
-                        </a>
-                    </li>
-                    <li>
-                        <a _href="echarts6.html">
-                            <i class="iconfont">&#xe6a7;</i>
-                            <cite>k线图</cite>
-                        </a>
-                    </li>
-                    <li>
-                        <a _href="echarts7.html">
-                            <i class="iconfont">&#xe6a7;</i>
-                            <cite>热力图</cite>
-                        </a>
-                    </li>
-                    <li>
-                        <a _href="echarts8.html">
-                            <i class="iconfont">&#xe6a7;</i>
-                            <cite>仪表图</cite>
+                            <cite>三月菜品销量</cite>
                         </a>
                     </li>
                 </ul>
