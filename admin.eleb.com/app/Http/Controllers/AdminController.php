@@ -15,6 +15,7 @@ class AdminController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+        $this->middleware(['permission:管理员管理']);
     }
 
     public function index(Request $request)
@@ -36,13 +37,11 @@ class AdminController extends Controller
                 'name'=>'required',
                 'email'=>'required',
                 'password'=>'required',
-                'role'=>'required',
             ],
             [
                 'name.required'=>'用户名不能为空',
                 'email.required'=>'邮箱不能为空',
                 'password.required'=>'密码不能为空',
-                'role.required'=>'角色不能为空',
             ]
         );
         $data = [
@@ -95,27 +94,7 @@ class AdminController extends Controller
 
     public function rupdate(Request $request)
     {
-        $this->validate($request,
-            [
-//                'name'=>'required',
-//                'email'=>'required',
-//                'password'=>'required',
-                'role'=>'required',
-            ],
-            [
-//                'name.required'=>'用户名不能为空',
-//                'email.required'=>'邮箱不能为空',
-//                'password.required'=>'密码不能为空',
-                'role.required'=>'角色不能为空',
-            ]
-        );
         $admin = Admin::find($request->id);
-//        $data = [
-//            'name'=>$request->name,
-//            'email'=>$request->email,
-//            'password'=>Hash::make($request->password),
-//        ];
-//        $admin->update($data);
         $admin->syncRoles($request->role);
         return redirect()->route('admins.index')->with('success','修改角色成功');
     }

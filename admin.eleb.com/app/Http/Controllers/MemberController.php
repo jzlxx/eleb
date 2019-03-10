@@ -11,6 +11,7 @@ class MemberController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+        $this->middleware(['permission:会员管理']);
     }
 
     public function index(Request $request)

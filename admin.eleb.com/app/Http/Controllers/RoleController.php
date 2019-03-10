@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Admin;
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
@@ -9,6 +10,14 @@ use Spatie\Permission\Models\Role;
 class RoleController extends Controller
 {
     //
+
+    public function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware(['permission:管理员管理']);
+    }
+
+
     public function index()
     {
         $permissions = Permission::all();
@@ -55,6 +64,12 @@ class RoleController extends Controller
 
     public function destroy(Role $role)
     {
+        $admins = Admin::all();
+        foreach ($admins as $admin){
+            if ($admin->hasRole($role->name)){
+                return redirect()->route('roles.index')->with('warning','有用户拥有该角色,无法删除');
+            }
+        }
         $role->delete();
         return redirect()->route('roles.index')->with('success','删除角色成功');
     }

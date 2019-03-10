@@ -58,3 +58,7 @@ Route::get('/count/order_month', 'CountController@order_month')->name('count.ord
 //菜品销量统计
 Route::get('/count/goods_week', 'CountController@goods_week')->name('count.goods_week');
 Route::get('/count/goods_month', 'CountController@goods_month')->name('count.goods_month');
+
+//试用活动
+Route::resource('events','EventController');
+Route::get('/events/sign/{event}', 'EventController@sign')->name('events.sign');

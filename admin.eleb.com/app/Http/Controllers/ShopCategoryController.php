@@ -13,6 +13,7 @@ class ShopCategoryController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+        $this->middleware(['permission:商家管理']);
     }
 
     public function index(Request $request)

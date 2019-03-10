@@ -1,38 +1,38 @@
 <div class="left-nav">
     <div id="side-nav">
         <ul id="nav">
-            <li>
-                <a href="javascript:;">
-                    <i class="iconfont">&#xe6b8;</i>
-                    <cite>个人信息管理</cite>
-                    <i class="iconfont nav_right">&#xe697;</i>
-                </a>
-                <ul class="sub-menu">
-                    <li>
-                        <a _href="">
-                            <i class="iconfont">&#xe6a7;</i>
-                            <cite>账号信息</cite>
+            {{--<li>--}}
+                {{--<a href="javascript:;">--}}
+                    {{--<i class="iconfont">&#xe6b8;</i>--}}
+                    {{--<cite>个人信息管理</cite>--}}
+                    {{--<i class="iconfont nav_right">&#xe697;</i>--}}
+                {{--</a>--}}
+                {{--<ul class="sub-menu">--}}
+                    {{--<li>--}}
+                        {{--<a _href="">--}}
+                            {{--<i class="iconfont">&#xe6a7;</i>--}}
+                            {{--<cite>账号信息</cite>--}}
 
-                        </a>
-                    </li >
-                    <li>
-                        <a href="javascript:;">
-                            <i class="iconfont">&#xe70b;</i>
-                            <cite>商铺信息管理</cite>
-                            <i class="iconfont nav_right">&#xe697;</i>
-                        </a>
-                        <ul class="sub-menu">
-                            <li>
-                                <a _href="">
-                                    <i class="iconfont">&#xe6a7;</i>
-                                    <cite>商铺信息</cite>
+                        {{--</a>--}}
+                    {{--</li >--}}
+                    {{--<li>--}}
+                        {{--<a href="javascript:;">--}}
+                            {{--<i class="iconfont">&#xe70b;</i>--}}
+                            {{--<cite>商铺信息管理</cite>--}}
+                            {{--<i class="iconfont nav_right">&#xe697;</i>--}}
+                        {{--</a>--}}
+                        {{--<ul class="sub-menu">--}}
+                            {{--<li>--}}
+                                {{--<a _href="">--}}
+                                    {{--<i class="iconfont">&#xe6a7;</i>--}}
+                                    {{--<cite>商铺信息</cite>--}}
 
-                                </a>
-                            </li >
-                        </ul>
-                    </li>
-                </ul>
-            </li>
+                                {{--</a>--}}
+                            {{--</li >--}}
+                        {{--</ul>--}}
+                    {{--</li>--}}
+                {{--</ul>--}}
+            {{--</li>--}}
             <li>
                 <a href="javascript:;">
                     <i class="iconfont">&#xe723;</i>
@@ -129,14 +129,14 @@
             <li>
                 <a href="javascript:;">
                     <i class="iconfont">&#xe6b4;</i>
-                    <cite>图标字体</cite>
+                    <cite>试用活动</cite>
                     <i class="iconfont nav_right">&#xe697;</i>
                 </a>
                 <ul class="sub-menu">
                     <li>
-                        <a _href="unicode.html">
+                        <a _href="{{ route('events.index') }}">
                             <i class="iconfont">&#xe6a7;</i>
-                            <cite>图标对应字体</cite>
+                            <cite>试用活动列表</cite>
                         </a>
                     </li>
                 </ul>

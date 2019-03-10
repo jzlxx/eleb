@@ -16,6 +16,7 @@ class ShopController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+        $this->middleware(['permission:商家管理']);
     }
 
     public function index(Request $request)
@@ -32,7 +33,6 @@ class ShopController extends Controller
 
     public function update(Request $request)
     {
-//        dd($request);
         $this->validate($request,
             [
                 'shop_category_id'=>'required|integer',
@@ -96,6 +96,25 @@ class ShopController extends Controller
     {
         if($shop->status == 0){
             $shop->status = 1;
+
+            $id = $shop->id;
+            $user = User::where('shop_id','=',$id)->first();
+            $email = $user->email;
+
+            $title = '商家注册审核通知';
+            $content = '<p>	
+                亲，您注册的商家已经<span style="color: red">通过</span>审核！<br/>
+                请注意查看。
+               </p>';
+            try{
+                \Illuminate\Support\Facades\Mail::send('email.default',compact('title','content'),
+                    function($message) use($email){
+                        $to = $email;
+                        $message->from(env('MAIL_USERNAME'))->to($to)->subject('商家注册审核通知');
+                    });
+            }catch (\Exception $e){
+                return '邮件发送失败';
+            }
         }else{
             $shop->status = 0;
         }

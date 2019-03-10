@@ -10,6 +10,7 @@ use App\Models\MenuCategory;
 use App\Models\Order;
 use App\Models\OrderDetail;
 use App\Models\Shop;
+use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -387,6 +388,46 @@ class ApiController extends Controller
                     OrderDetail::create($data_goods);
                 }
             });
+
+
+            $user = User::where('shop_id','=',$shop_id)->first();
+            $email = $user->email;
+            $title = '用户下单通知';
+            $content = '<p>	
+                您有一个新的<span style="color: red">订单</span>！<br/>
+                请注意查看。
+               </p>';
+            try{
+                \Illuminate\Support\Facades\Mail::send('email.default',compact('title','content'),
+                    function($message) use($email){
+                        $to = $email;
+                        $message->from(env('MAIL_USERNAME'))->to($to)->subject('用户下单通知');
+                    });
+            }catch (\Exception $e){
+                return '邮件发送失败';
+            }
+
+
+            $appid = 1400189767; // 1400开头
+            // 短信应用SDK AppKey
+            $appkey = "821321ca2ecdfb2544e824961e2e1856";
+            // 需要发送短信的手机号码
+            $phoneNumber = Auth::user()->tel;
+            //        //templateId7839对应的内容是"您的验证码是: {1}"
+            // 短信模板ID，需要在短信应用中申请
+            $templateId = 290652;  // NOTE: 这里的模板ID`7839`只是一个示例，真实的模板ID需要在短信控制台中申请
+            $smsSign = "蒋自林的个人文字记录"; // NOTE: 这里的签名只是示例，请使用真实的已申请的签名，签名参数使用的是`签名内容`，而不是`签名ID`
+            try {
+                $ssender = new SmsSingleSender($appid, $appkey);
+                $params = [];//数组具体的元素个数和模板中变量个数必须一致，例如事例中 templateId:5678对应一个变量，参数数组中元素个数也必须是一个
+                $result = $ssender->sendWithParam("86", $phoneNumber, $templateId,
+                    $params, $smsSign, "", "");  // 签名参数未提供或者为空时，会使用默认签名发送短信
+                $rsp = json_decode($result);
+            } catch(\Exception $e) {
+                var_dump($e);
+            }
+
+
             return [
                 "status"=>"true",
                 "message"=>"添加成功",
