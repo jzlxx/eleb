@@ -66,14 +66,14 @@
                     <td class="td-manage">
         {{--                <a class="btn btn-info" href="#" role="button" data-toggle="modal" data-target="#ShowModel" onclick="getShow({{ $activity }})">查看详情</a>--}}
                         @if(date('Y-m-d',$event->signup_end) >= date('Y-m-d'))
-                            @if(\App\Models\EventMember::where('events_id','=',$event->id)->where('member_id','=',\Illuminate\Support\Facades\Auth::user()->id)->count() != 0)
+                            @if(\App\Models\EventMember::where('events_id','=',$event->id)->where('member_id','=',\Illuminate\Support\Facades\Auth::user()->id)->count() == 0)
                                 @if(\App\Models\EventMember::where('events_id','=',$event->id)->count() < $event->signup_num)
                                     <a class="btn btn-info" href="{{ route('events.sign',[$event]) }}" role="button">报名参加</a>
                                     @else
-                                    <a class="btn btn-default" href="" role="button" disabled>已报名</a>
+                                    <a class="btn btn-default" href="" role="button" disabled>名额已满</a>
                                 @endif
-                            @elseif(\App\Models\EventMember::where('events_id','=',$event->id)->where('member_id','=',\Illuminate\Support\Facades\Auth::user()->id)->count())
-                                <a class="btn btn-default" href="" role="button" disabled>名额已满</a>
+                            @else
+                                <a class="btn btn-default" href="" role="button" disabled>已报名</a>
                             @endif
                             @else
                             <a class="btn btn-default" href="" role="button" disabled>报名结束</a>

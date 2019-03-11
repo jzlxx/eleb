@@ -28,7 +28,7 @@ class EventController extends Controller
     {
         $events_id = $event->id;
         $num = Redis::decr($events_id);
-        if($num > 0){
+        if($num >= 0){
             $member_id = Auth::user()->id;
             EventMember::create(
                 [
