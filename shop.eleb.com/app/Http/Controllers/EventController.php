@@ -7,6 +7,7 @@ use App\Models\EventMember;
 use App\Models\EventPrize;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Redis;
 
 class EventController extends Controller
 {
@@ -26,7 +27,8 @@ class EventController extends Controller
     public function sign(Event $event)
     {
         $events_id = $event->id;
-        if(EventMember::where('events_id','=',$events_id)->count() < $event->signup_num){
+        $num = Redis::decr($events_id);
+        if($num > 0){
             $member_id = Auth::user()->id;
             EventMember::create(
                 [
@@ -36,6 +38,7 @@ class EventController extends Controller
             );
             return redirect()->route('events.index')->with('success','报名成功');
         }else{
+            Redis::incr($events_id);
             return redirect()->route('events.index')->with('warning','报名人数已满');
         }
     }

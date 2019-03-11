@@ -7,6 +7,7 @@ use App\Models\EventPrize;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redis;
 
 class EventController extends Controller
 {
@@ -55,7 +56,8 @@ class EventController extends Controller
             'signup_num'=>$request->signup_num,
             'is_prize'=>0,
         ];
-        Event::create($data);
+        $event = Event::create($data);
+        Redis::set($event->id,$request->signup_num);
         return redirect()->route('events.index')->with('success','添加活动成功');
     }
 
@@ -133,6 +135,7 @@ class EventController extends Controller
             }
         }
         $event->update(['is_prize'=>1]);
+        Redis::del($event->id);
         return redirect()->route('events.index')->with('success','抽奖成功');
     }
 }
