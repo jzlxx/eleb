@@ -20,7 +20,7 @@ class EventController extends Controller
 
     public function index(Request $request)
     {
-        $events = Event::where('signup_start','<',strtotime(date('Y-m-d')))->paginate(3);
+        $events = Event::where('signup_start','<=',strtotime(date('Y-m-d')))->paginate(3);
         return view('event.index',['events'=>$events]);
     }
 
