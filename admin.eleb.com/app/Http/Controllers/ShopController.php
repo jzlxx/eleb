@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Shop;
 use App\Models\ShopCategory;
 use App\Models\User;
+use App\SphinxClient;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -23,9 +24,19 @@ class ShopController extends Controller
     {
         $shopcategories = ShopCategory::all();
         $keyword = $request->keyword;
-        if ($keyword){
-            $shops = Shop::where('name','like',"%$keyword%")->paginate(3);
-        }else{
+            $cl = new SphinxClient();
+            $cl->SetServer ( '127.0.0.1', 9312);
+            $cl->SetConnectTimeout ( 10 );
+            $cl->SetArrayResult ( true );
+            $cl->SetMatchMode ( SPH_MATCH_EXTENDED2);
+            $cl->SetLimits(0, 1000);
+            $res = $cl->Query($keyword, 'shops');
+            if($res['matches']??0){
+                foreach ($res['matches'] as $shopr){
+                    $shopsid[] = $shopr['id'];
+                }
+                $shops = Shop::whereIn('id',$shopsid)->paginate(3);
+            }else{
             $shops = Shop::paginate(3);
         }
         return view('shop.index',['shops'=>$shops,'shopcategories'=>$shopcategories,'keyword'=>$keyword]);
